@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -11,6 +12,7 @@ const App = () => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
   const [user, setUser] = useState(null)
+  const [message, setMessage] = useState(null) // message is an object: {text: String, isError: Boolean}
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -41,12 +43,15 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      setMessage({text: `${username} logged in`, isError: false})
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)    
     } catch (exception) {
-      console.log('Wrong Credentials')
-      // setErrorMessage('Wrong credentials')
-      // setTimeout(() => {
-      //   setErrorMessage(null)
-      // }, 5000)
+      setMessage({text: 'Wrong credentials', isError: true})
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
     }
   }
 
@@ -54,6 +59,10 @@ const App = () => {
     event.preventDefault()
     window.localStorage.removeItem('loggedBlogappUser', '')
     setUser(null)
+    setMessage({text: `User logged out`, isError: false})
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)  
   }
 
   const handleAddBlog = async (event) => {
@@ -69,9 +78,12 @@ const App = () => {
       setTitle('')
       setAuthor('')
       setUrl('')
+      setMessage({text:`New Blog ${addedBlog.title} by ${addedBlog.author} added`, isError: false})
     } catch (exception) {
-      console.log('Adding Blog failed')
-    }
+      setMessage({text: 'Error:Blog not added', isError: true})
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)    }
   }
 
   const loginForm = () => (
@@ -103,6 +115,8 @@ const App = () => {
 
   return (
     <div>
+      {message && <Notification message={message} />}
+
       {!user && loginForm()}
       {user && <div>
         <h2>blogs</h2>
