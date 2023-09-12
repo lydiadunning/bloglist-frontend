@@ -1,16 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import AddBlog from './components/AddBlog'
+import Togglable from './components/Toggleable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null) // message is an object: {text: String, isError: Boolean}
 
@@ -65,19 +64,12 @@ const App = () => {
       }, 5000)  
   }
 
-  const handleAddBlog = async (event) => {
-    event.preventDefault()
-      
+  const blogFormRef = useRef()
+  const createBlog = async (blogObject) => {
+    blogFormRef.current.toggleVisibility()
     try {
-      const addedBlog = await blogService.create({
-        'title': title,
-        'author': author,
-        'url': url
-      })
+      const addedBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(addedBlog))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
       setMessage({text:`New Blog ${addedBlog.title} by ${addedBlog.author} added`, isError: false})
     } catch (exception) {
       setMessage({text: 'Error:Blog not added', isError: true})
@@ -113,6 +105,7 @@ const App = () => {
     </div>
   )
 
+
   return (
     <div>
       {message && <Notification message={message} />}
@@ -121,37 +114,9 @@ const App = () => {
       {user && <div>
         <h2>blogs</h2>
         <p>{user.name} logged in</p><button onClick={handleLogout}>log out</button>
-        <h2>Create new</h2>
-        <form onSubmit={handleAddBlog}>
-        <div>
-          title
-            <input
-            type="text"
-            value={title}
-            name="title"
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          author
-            <input
-            type="text"
-            value={author}
-            name="author"
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url
-            <input
-            type="text"
-            value={url}
-            name="url"
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>      
+        <Togglable buttonLabel='new blog' ref={blogFormRef}>
+          <AddBlog  createBlog={createBlog}/>
+        </Togglable>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
