@@ -13,6 +13,10 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null) // message is an object: {text: String, isError: Boolean}
 
+  const setBlogsByLikes = (blogs) => {
+    
+  }
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
@@ -119,6 +123,16 @@ const App = () => {
     </div>
   )
 
+  const blogList = () => {
+    return (
+      blogs.sort((a, b) => {
+        return b.likes - a.likes 
+      }).map(blog =>
+        <Blog key={blog.id} blog={blog} updateLikes={updateLikes} />
+      )
+    )
+  }
+
   console.log('all blogs', blogs)
   return (
     <div>
@@ -131,9 +145,7 @@ const App = () => {
         <Togglable buttonLabel='new blog' ref={blogFormRef}>
           <AddBlog  createBlog={createBlog}/>
         </Togglable>
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} updateLikes={updateLikes} />
-        )}
+        {blogList()}
       </div>}
     </div>
   ) 
