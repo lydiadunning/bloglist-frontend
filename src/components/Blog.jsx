@@ -1,13 +1,27 @@
 import { useState } from "react"
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateLikes }) => {
   const [expanded, setExpanded] = useState(false)
+  const [likes, setLikes] = useState(blog.likes)
 
   const hideWhenExpanded = { display: expanded ? 'none' : '' }
   const showWhenExpanded = { display: expanded ? '' : 'none' }
 
   const toggleVisibility = () => {
     setExpanded(!expanded)
+  }
+
+  const addLike = () => {
+    const currentLikes = likes + 1
+    updateLikes({
+      user: blog.user.id,
+      likes: currentLikes,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url,
+      id: blog.id
+    })
+    setLikes(currentLikes)
   }
 
   const blogStyle = {
@@ -18,17 +32,15 @@ const Blog = ({ blog }) => {
     marginBottom: 5
   }
   
-console.log(blog)
-
   return (
     <div style={blogStyle}>
       {blog.title} {blog.author} <button onClick={toggleVisibility} style={hideWhenExpanded}>view</button>
       <section style={showWhenExpanded}>
         {blog.url}
         <br/>
-        likes: {blog.likes} <button>like</button>
+        likes: {likes} <button onClick={addLike}>like</button>
         <br/>
-        {blog.user.username}
+        {blog.user.name}
         <br/>
         <button onClick={toggleVisibility}>hide</button>
       </section>

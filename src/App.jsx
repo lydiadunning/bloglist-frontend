@@ -75,7 +75,21 @@ const App = () => {
       setMessage({text: 'Error:Blog not added', isError: true})
       setTimeout(() => {
         setMessage(null)
-      }, 5000)    }
+      }, 5000)    
+    }
+  }
+
+  const updateLikes = async (blogObject) => {
+    console.log('blogObject', blogObject)
+    try {
+      const changedBlog = await blogService.update(blogObject.id, blogObject)
+      console.log(changedBlog)
+    } catch (exception) {
+      setMessage({text: 'Error:Blog like not added', isError: true})
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)    
+    }
   }
 
   const loginForm = () => (
@@ -105,7 +119,7 @@ const App = () => {
     </div>
   )
 
-
+  console.log('all blogs', blogs)
   return (
     <div>
       {message && <Notification message={message} />}
@@ -118,7 +132,7 @@ const App = () => {
           <AddBlog  createBlog={createBlog}/>
         </Togglable>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} updateLikes={updateLikes} />
         )}
       </div>}
     </div>
