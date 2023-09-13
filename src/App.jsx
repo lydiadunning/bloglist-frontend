@@ -13,9 +13,6 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null) // message is an object: {text: String, isError: Boolean}
 
-  const setBlogsByLikes = (blogs) => {
-    
-  }
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -84,12 +81,23 @@ const App = () => {
   }
 
   const updateLikes = async (blogObject) => {
-    console.log('blogObject', blogObject)
     try {
-      const changedBlog = await blogService.update(blogObject.id, blogObject)
-      console.log(changedBlog)
+      await blogService.update(blogObject.id, blogObject)
     } catch (exception) {
       setMessage({text: 'Error:Blog like not added', isError: true})
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)    
+    }
+  }
+
+  const deleteById = async (blogId, blogTitle) => {
+    try {
+      await blogService.deleteThis(blogId)
+      setMessage({text:`${blogTitle} removed`, isError: false})
+      setBlogs(blogs.filter(blog => blog.id != blogId))
+    } catch (exception) {
+      setMessage({text: 'blog not deleted', isError: true})
       setTimeout(() => {
         setMessage(null)
       }, 5000)    
@@ -128,12 +136,11 @@ const App = () => {
       blogs.sort((a, b) => {
         return b.likes - a.likes 
       }).map(blog =>
-        <Blog key={blog.id} blog={blog} updateLikes={updateLikes} />
+        <Blog key={blog.id} blog={blog} updateLikes={updateLikes} deleteById={deleteById}/>
       )
     )
   }
 
-  console.log('all blogs', blogs)
   return (
     <div>
       {message && <Notification message={message} />}
@@ -145,8 +152,8 @@ const App = () => {
         <Togglable buttonLabel='new blog' ref={blogFormRef}>
           <AddBlog  createBlog={createBlog}/>
         </Togglable>
-        {blogList()}
       </div>}
+      {blogList()}
     </div>
   ) 
 }
