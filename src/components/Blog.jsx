@@ -40,23 +40,29 @@ const Blog = ({ blog, updateLikes, deleteById }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-  
-  return (
-    <div style={blogStyle}>
-      {blog.title + ' - '} 
-      {blog.author} 
-      <button onClick={toggleVisibility} style={hideWhenExpanded}>view</button>   
-      <button onClick={toggleVisibility} style={showWhenExpanded}>hide</button>
 
-      <section style={showWhenExpanded}>
+  const expandable = () => {
+    return (
+      <section /*style={showWhenExpanded}*/ id='expanded'>
         {blog.url}
         <br/>
-        likes: {likes} <button onClick={addLike}>like</button>
+        <p id='likes'>likes: {likes} <button onClick={addLike}>like</button></p>
         <br/>
         {blog.user.name}
         <br/>
         <button onClick={deleteBlog}>remove</button>
       </section>
+    )
+  }
+
+  return (
+    <div style={blogStyle}>
+      {blog.title + ' - '} 
+      {blog.author} 
+      <button onClick={toggleVisibility} style={hideWhenExpanded} id='view'>view</button>   
+      <button onClick={toggleVisibility} style={showWhenExpanded} id='hide'>hide</button>
+      {expanded && expandable()}
+
     </div>  
   )
 }
