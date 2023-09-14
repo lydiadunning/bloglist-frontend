@@ -3,7 +3,7 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
-import AddBlog from './components/AddBlog'
+import BlogForm from './components/BlogForm'
 import Togglable from './components/Toggleable'
 
 const App = () => {
@@ -150,7 +150,7 @@ const App = () => {
         <h2>blogs</h2>
         <p>{user.name} logged in</p><button onClick={handleLogout}>log out</button>
         <Togglable buttonLabel='new blog' ref={blogFormRef}>
-          <AddBlog  createBlog={createBlog}/>
+          <BlogForm  createBlog={createBlog}/>
         </Togglable>
       </div>}
       {blogList()}
