@@ -6,4 +6,8 @@ export default defineConfig({
       // implement node event listeners here
     },
   },
+  env: {
+    BACKEND: 'http://localhost:3003/api'
+  }
+
 });
