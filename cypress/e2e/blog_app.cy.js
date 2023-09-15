@@ -44,6 +44,36 @@ describe('Blog app', function() {
         .and('have.css', 'color', 'rgb(255, 0, 0)')
         .and('have.css', 'border-style', 'solid')
     })
+
+    describe('When logged in', function() {
+      beforeEach(function() {
+        cy.request('POST', `${Cypress.env('BACKEND')}/login`, {
+          username: 'csaffron', password: 'password'
+        }).then(({ body }) => {
+          localStorage.setItem('loggedBlogappUser', JSON.stringify(body))
+          cy.visit('http://localhost:5173')
+          cy.contains('new blog').click()
+        })      
+      })
+  
+      it('A blog can be created', function() {
+        cy.get('#title').type('Testing Blog')
+        cy.get('#author').type('Arthur Author')
+        cy.get('#url').type('www.blog.com/blog')
+        cy.contains('create').click()
+        cy.contains('blogs')
+        cy.get('.message').contains('New Blog Testing Blog by Arthur Author added')
+        cy.contains('Testing Blog - Arthur Author')
+      })
+
+      it('An empty form is rejected', function() {
+        cy.contains('create').click()
+        cy.get('.error')
+        .should('contain', 'Error:Blog not added')
+        .and('have.css', 'color', 'rgb(255, 0, 0)')
+        .and('have.css', 'border-style', 'solid')
+      })
+    })
   })
 })
 
