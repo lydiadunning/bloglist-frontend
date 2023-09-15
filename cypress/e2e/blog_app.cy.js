@@ -76,21 +76,14 @@ describe('Blog app', function() {
 
       describe('When a blog has been added', function() {
         beforeEach(function() {
-          cy.request({
-            url: `${Cypress.env('BACKEND')}/blogs`,
-            method: 'POST',
-            body: { 
-              title: 'Busses Everyday', 
-              author: 'Jerry Burlywood', 
-              url: 'www.busses.com' 
-            },
-            headers: {
-              'Authorization': `Bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
-            }
-          }).then(() => {
-            cy.visit('http://localhost:5173')
-            cy.contains('view').click()
-          })      
+          cy.createBlog({ 
+            title: 'Busses Everyday', 
+            author: 'Jerry Burlywood', 
+            url: 'www.busses.com' 
+          })
+          cy.visit('http://localhost:5173')
+          cy.contains('view').click()
+             
         })
     
         it('it can be liked by its creator', function() {
@@ -146,13 +139,46 @@ describe('Blog app', function() {
             cy.contains('likes: 1')
           })
 
-          it.only('a blog can not be deleted', function() {
+          it('a blog can not be deleted', function() {
             cy.get('#expanded').should('not.contain', 'remove')
           })
         })
         
+        describe('when several blogs have been added', function() {
+          beforeEach(function() {
+            cy.createBlog({
+              title: 'blog 1',
+              author: 'Erica Zeal',
+              url: 'www.therealhank.com'
+            }).then(blog => {
+              cy.likeBlog(blog.body, 5)
+            })
+            cy.createBlog({
+              title: 'blog 2',
+              author: 'Jim x',
+              url: 'www.finallytherealhank.com'
+            }).then(blog => {
+              cy.likeBlog(blog.body, 1)
+            })
+            cy.createBlog({
+              title: 'blog 3',
+              author: 'Melinda Hab',
+              url: 'www.thethirdblog.com'
+            }).then(blog => {
+              cy.likeBlog(blog.body, 10)
+            })
+            cy.visit('http://localhost:5173')
+            cy.contains('view').click()
+          })
 
-        // describe('When another user is signed in')
+          it.only('blogs show in order of likes', function() {
+            cy.get('.blog').eq(0).should('contain', 'blog 3')
+            cy.get('.blog').eq(1).should('contain', 'blog 1')
+            cy.get('.blog').eq(2).should('contain', 'blog 2')
+            cy.get('.blog').eq(3).should('contain', 'Busses Everyday')
+
+          }) 
+        })
       })
     })
   })
