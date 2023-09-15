@@ -57,7 +57,7 @@ const App = () => {
 
   const handleLogout = (event) => {
     event.preventDefault()
-    window.localStorage.removeItem('loggedBlogappUser', '')
+    window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
     setMessage({text: `User logged out`, isError: false})
       setTimeout(() => {

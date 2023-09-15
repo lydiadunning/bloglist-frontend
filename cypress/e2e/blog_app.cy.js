@@ -73,6 +73,70 @@ describe('Blog app', function() {
         .and('have.css', 'color', 'rgb(255, 0, 0)')
         .and('have.css', 'border-style', 'solid')
       })
+
+      describe('When a blog has been added', function() {
+        beforeEach(function() {
+          cy.request({
+            url: `${Cypress.env('BACKEND')}/blogs`,
+            method: 'POST',
+            body: { 
+              title: 'Busses Everyday', 
+              author: 'Jerry Burlywood', 
+              url: 'www.busses.com' 
+            },
+            headers: {
+              'Authorization': `Bearer ${JSON.parse(localStorage.getItem('loggedBlogappUser')).token}`
+            }
+          }).then(() => {
+            cy.visit('http://localhost:5173')
+            cy.contains('view').click()
+          })      
+        })
+    
+        it('it can be liked by its creator', function() {
+          cy.contains('likes: 0')
+          cy.contains('like').click()
+          cy.contains('likes: 1')
+        })
+
+        describe('When no user is logged in', function() {
+          beforeEach(function() {
+            localStorage.removeItem('loggedBlogappUser')
+          })
+
+          it('a blog can be liked', function() {
+            cy.contains('likes: 0')
+            cy.contains('like').click()
+            cy.contains('likes: 1')
+          })
+        })
+        
+        describe('When another user is logged in', function() {
+          this.beforeEach(function() {
+            const user = {
+              name: 'Joe Mike',
+              username: 'King Dude',
+              password: 'drowssap'
+            }
+            cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
+            cy.request('POST', `${Cypress.env('BACKEND')}/login`, {
+              username: 'King Dude', password: 'drowssap'
+            }).then(({ body }) => {
+              localStorage.setItem('loggedBlogappUser', JSON.stringify(body))
+              cy.visit('http://localhost:5173')
+              cy.contains('view').click()
+            })      
+          })
+          it('a blog can be liked', function() {
+            cy.contains('likes: 0')
+            cy.contains('like').click()
+            cy.contains('likes: 1')
+          })
+        })
+        
+
+        // describe('When another user is signed in')
+      })
     })
   })
 })
