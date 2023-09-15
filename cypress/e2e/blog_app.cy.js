@@ -99,7 +99,7 @@ describe('Blog app', function() {
           cy.contains('likes: 1')
         })
 
-        it.only('a blog can be deleted by its creator', function() {
+        it('a blog can be deleted by its creator', function() {
           cy.contains('remove').click()
           cy.get('.message').contains('Busses Everyday removed')
           cy.get('html').should('not.contain', 'Busses Everyday - Jerry Burlywood')
@@ -108,12 +108,18 @@ describe('Blog app', function() {
         describe('When no user is logged in', function() {
           beforeEach(function() {
             localStorage.removeItem('loggedBlogappUser')
+            cy.visit('http://localhost:5173')
+            cy.contains('view').click()
           })
 
           it('a blog can be liked', function() {
             cy.contains('likes: 0')
             cy.contains('like').click()
             cy.contains('likes: 1')
+          })
+
+          it('a blog can not be deleted', function() {
+            cy.get('#expanded').should('not.contain', 'remove')
           })
         })
         
@@ -133,10 +139,15 @@ describe('Blog app', function() {
               cy.contains('view').click()
             })      
           })
+
           it('a blog can be liked', function() {
             cy.contains('likes: 0')
             cy.contains('like').click()
             cy.contains('likes: 1')
+          })
+
+          it.only('a blog can not be deleted', function() {
+            cy.get('#expanded').should('not.contain', 'remove')
           })
         })
         

@@ -2,7 +2,7 @@ import { useState } from "react"
 import PropTypes from 'prop-types'
 
 
-const Blog = ({ blog, updateLikes, deleteById }) => {
+const Blog = ({ blog, updateLikes, deleteById, isActiveUser }) => {
   const [expanded, setExpanded] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
 
@@ -50,7 +50,7 @@ const Blog = ({ blog, updateLikes, deleteById }) => {
         <br/>
         {blog.user.name}
         <br/>
-        <button onClick={deleteBlog}>remove</button>
+        {isActiveUser && <button onClick={deleteBlog}>remove</button>}
       </section>
     )
   }
