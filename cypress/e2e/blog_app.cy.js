@@ -99,6 +99,12 @@ describe('Blog app', function() {
           cy.contains('likes: 1')
         })
 
+        it.only('a blog can be deleted by its creator', function() {
+          cy.contains('remove').click()
+          cy.get('.message').contains('Busses Everyday removed')
+          cy.get('html').should('not.contain', 'Busses Everyday - Jerry Burlywood')
+        })
+
         describe('When no user is logged in', function() {
           beforeEach(function() {
             localStorage.removeItem('loggedBlogappUser')
