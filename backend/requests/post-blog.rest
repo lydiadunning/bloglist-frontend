@@ -1,0 +1,32 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlB1ZGRpbmcgUGFsIiwiaWQiOiI2NGYxNGQ5ZDJlMzBmNzM3Y2RhNWFjZTQiLCJpYXQiOjE2OTM1OTY3ODQsImV4cCI6MTY5MzYwMDM4NH0.rS_201KQzJfRDbB1d1k4pdeXM1rUC2EpOCFL6K5buHs
+
+# {
+#     "title": "Learn to Lean from a Pro",
+#     "author": "Pitch Jiminez",
+#     "url": "www.learntolean.pro",
+#     "likes": 5
+# }
+
+# {
+#     "title": "Worse at Math",
+#     "author": "Harlan Barley",
+#     "url": "www.twoplustwoisten.edu",
+#     "likes": 1
+#     ""
+# }
+
+# {
+#     "title": "React patterns",
+#     "author": "Michael Chan",
+#     "url": "https://reactpatterns.com/",
+#     "likes": 7
+# }
+
+{
+    "title": "Onion Championships",
+    "author": "Enoki Morel",
+    "url": "www.dirtguy.com",
+    "likes": 1
+  }

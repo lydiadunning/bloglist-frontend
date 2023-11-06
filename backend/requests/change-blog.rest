@@ -1,0 +1,11 @@
+PUT http://localhost:3003/api/blogs/64f23c8617658df702d60e0e
+Content-Type: application/json
+
+{
+  "title": "Onion Championships",
+  "author": "Enoki Morel",
+  "url": "www.dirtguy.com",
+  "likes": 5,
+  "user": "64f14d9d2e30f737cda5ace4",
+  "id": "64f23c8617658df702d60e0e"
+}
